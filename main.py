@@ -6,6 +6,7 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from constants import *
 from player import Player
+from shot import Shot
 
 os.environ["LIBGL_ALWAYS_INDIRECT"] = "1"
 os.environ["SDL_AUDIODRIVER"] = "dummy"
@@ -26,11 +27,13 @@ def main():
     drawable = pygame.sprite.Group()
 
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
     Asteroid.containers = (asteroids, updatable, drawable)
+    Shot.containers = (shots, updatable, drawable)
 
     AsteroidField.containers = (updatable,)
     asteroidfield = AsteroidField()
@@ -46,6 +49,11 @@ def main():
             if player.collide(asteroid):
                 print("Game over!")
                 return
+
+            for shot in shots:
+                if asteroid.collide(shot):
+                    shot.kill()
+                    asteroid.split()
 
         screen.fill("black")
 
